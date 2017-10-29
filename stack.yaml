@@ -1,0 +1,8 @@
+flags: {}
+extra-package-dbs: []
+packages:
+- .
+extra-deps:
+- hext-0.1.0.4
+- simpleirc-0.3.1
+resolver: lts-9.10

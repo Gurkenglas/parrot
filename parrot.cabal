@@ -1,0 +1,52 @@
+name:                parrot
+version:             0.1.0.0
+-- synopsis:
+-- description:
+homepage:            https://github.com/Gurkenglas/parrot#readme
+author:              Gurkenglas
+maintainer:          gurkenglas@hotmail.de
+copyright:           (c) 2016-2016 Gurkenglas
+category:            library
+build-type:          Simple
+extra-source-files:  README.md
+cabal-version:       >=1.10
+
+library
+  hs-source-dirs:      src
+  exposed-modules:     Lib
+  build-depends:       base >= 4.7 && < 5
+                     , hext
+                     , simpleirc
+                     , bytestring
+                     , text
+  default-language:    Haskell2010
+
+executable parrot-strip-logs
+  hs-source-dirs:      app
+  main-is:             striplogs.hs
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  build-depends:       base
+                     , directory
+                     , bytestring
+  default-language:    Haskell2010
+
+executable parrot-exe
+  hs-source-dirs:      app
+  main-is:             Main.hs
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  build-depends:       base
+                     , parrot
+  default-language:    Haskell2010
+
+test-suite parrot-test
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Spec.hs
+  build-depends:       base
+                     , parrot
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  default-language:    Haskell2010
+
+source-repository head
+  type:     git
+  location: https://github.com/Gurkenglas/parrot

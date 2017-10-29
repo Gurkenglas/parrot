@@ -16,15 +16,13 @@ import qualified Data.Text.IO as TIO
 import qualified Data.Text.Encoding as TE
 import qualified Data.Text.Lazy as TL
 import Control.Applicative
-import Debug.Trace
 import Control.Concurrent
 import Control.Monad
 
 onMessage :: BayesModel (Maybe T.Text) -> EventFunc
-onMessage _ _ m | traceShow m False = undefined
 onMessage _ s m | isNothing (mChan m) && mMsg m == "quit" && mNick m == Just "Gurkenglas" = disconnect s "quit"
 onMessage model s m | mNick m /= Just "parrotbot" =
-  for_ (traceShowId $ runBayes model $ traceShowId $ B.unpack $ mMsg m) $ \nick ->
+  for_ (runBayes model $ B.unpack $ mMsg m) $ \nick ->
     sendMsg s "#parrot" $ B.pack (T.unpack nick) <> ", " <> fromMaybe "a ghost" (mNick m) <> " on " <> fromMaybe "a private connection" (mChan m) <> " said " <> B.pack (show $  mMsg m) <> "."
 onMessage _ _ _ = pure ()
 
@@ -42,10 +40,10 @@ f line (replies, model) = case T.words line of
 someFunc :: IO ()
 someFunc = do
   model <- snd . foldr f ([], emptyModel) . T.lines . TE.decodeLatin1 <$> B.readFile "res/log"
+  print model
   let events = [Privmsg $ onMessage model]
       freenode = (mkDefaultConfig "irc.freenode.net" "parrotbot")
             { cChannels = ["#parrot", "#haskell"] -- Channels to join on connect
             , cEvents   = events -- Events to bind
             }
-  Right server <- connect freenode False True
-  print =<< getChannels server
+  void $ connect freenode False True
